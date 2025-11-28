@@ -11,6 +11,10 @@ Streamlit で構築されており、ブラウザだけで利用できます。
 
 👉 **アプリURL：https://app-iris-demo-iv4sk6rndpthaeyyyqfzfr.streamlit.app/
 
+> **Note:**
+> Streamlit Cloud（無料プラン）はシングルスレッドで動作しており、同時接続が増えるとレスポンスが順次遅延します。
+> そのため、3〜5人程度のアクセスが「安全マージンのある同時アクセス数」となります。
+
 ---
 
 ## 📘 アプリ概要
