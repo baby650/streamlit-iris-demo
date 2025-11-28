@@ -1,23 +1,36 @@
 import streamlit as st
 import joblib
 import matplotlib.pyplot as plt
+import matplotlib.font_manager
 from sklearn.datasets import load_iris
+import os
 
+# 日本語フォント設定 (Streamlit Cloud用)
+# fontフォルダがルートにあることを想定
+try:
+    matplotlib.font_manager.fontManager.addfont("font/NotoSansJP-Regular.ttf")
+    plt.rcParams['font.family'] = "Noto Sans JP"
+except FileNotFoundError:
+    st.warning("日本語フォント (font/NotoSansJP-Regular.ttf) が見つかりません。デフォルトフォントを使用します。")
 
-# 日本語フォント設定（Streamlit Cloud で動作するフォント）
-import matplotlib
-matplotlib.rcParams['font.family'] = ['IPAPGothic', 'Noto Sans CJK JP', 'TakaoGothic', 'VL PGothic', 'DejaVu Sans']
-# 日本語フォント設定 (デスクトップ上)
-# plt.rcParams['font.family'] = 'MS Gothic'
-# モデル読み込み
-model = joblib.load("model.pkl")
+# モデルの読み込み
+# 実行ディレクトリによってパスが変わる可能性があるため、両方試す
+model_path = 'src/model.pkl'
+if not os.path.exists(model_path):
+    model_path = 'model.pkl'
 
-st.set_page_config(page_title="Iris Classification", layout="centered")
+try:
+    model = joblib.load(model_path)
+except FileNotFoundError:
+    st.error("モデルファイル (model.pkl) が見つかりません。train_model.py を実行してモデルを作成してください。")
+    st.stop()
 
-st.title("アヤメの品種分類 (KNN)")
+# タイトル
+st.title("Iris 品種予測アプリ")
 
 # 入力フォーム
-sepal_length = st.number_input("がく片の長さ", 0.0, 10.0, 5.1)
+st.write("以下の数値を入力してください。")
+sepal_length = st.number_input("がく片の長さ", 0.0, 10.0, 5.0)
 sepal_width = st.number_input("がく片の幅", 0.0, 10.0, 3.5)
 petal_length = st.number_input("花弁の長さ", 0.0, 10.0, 1.4)
 petal_width = st.number_input("花弁の幅", 0.0, 10.0, 0.2)
@@ -25,11 +38,12 @@ petal_width = st.number_input("花弁の幅", 0.0, 10.0, 0.2)
 species = ["setosa", "versicolor", "virginica"]
 
 if st.button("予測"):
-    pred_id = model.predict([[sepal_length, sepal_width, petal_length, petal_width]])[0]
-    st.success(f"予測結果: **{species[pred_id]}** (class {pred_id})")
+    # 予測の実行
+    prediction = model.predict([[sepal_length, sepal_width, petal_length, petal_width]])[0]
+    st.success(f"予測結果: {species[prediction]}")
 
-    # --- 視覚化 ---
-    st.subheader("散布図")
+    # 散布図の表示
+    st.subheader("散布図 (花弁の長さ vs 花弁の幅)")
 
     iris = load_iris()
     X = iris.data
@@ -38,27 +52,16 @@ if st.button("予測"):
     fig, ax = plt.subplots(figsize=(6, 4))
     colors = ["blue", "orange", "green"]
 
+    # 学習データのプロット (花弁の長さ(index 2) と 花弁の幅(index 3) を使用)
     for i, color in enumerate(colors):
-        ax.scatter(
-            X[y == i, 2],
-            X[y == i, 3],
-            label=species[i],
-            alpha=0.6,
-            c=color
-        )
+        ax.scatter(X[y == i, 2], X[y == i, 3], alpha=0.6, c=color, label=species[i])
 
-    ax.scatter(
-        petal_length,
-        petal_width,
-        color="red",
-        s=50,
-        marker="X",
-        label="あなたの入力"
-    )
+    # 入力データのプロット
+    ax.scatter(petal_length, petal_width, color="red", marker="X", s=100, label="あなたの入力")
 
     ax.set_xlabel("花弁の長さ")
     ax.set_ylabel("花弁の幅")
-    ax.set_title("アヤメデータ散布図と入力プロット")
+    ax.set_title("Irisデータ散布図と入力プロット")
     ax.legend()
 
     st.pyplot(fig)
