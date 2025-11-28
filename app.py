@@ -5,25 +5,12 @@ import matplotlib.font_manager
 from sklearn.datasets import load_iris
 import os
 
-# 日本語フォント設定 (Streamlit Cloud用)
-# fontフォルダがルートにあることを想定
-try:
-    matplotlib.font_manager.fontManager.addfont("font/NotoSansJP-Regular.ttf")
-    plt.rcParams['font.family'] = "Noto Sans JP"
-except FileNotFoundError:
-    st.warning("日本語フォント (font/NotoSansJP-Regular.ttf) が見つかりません。デフォルトフォントを使用します。")
+# 日本語フォント設定
+matplotlib.font_manager.fontManager.addfont("font/NotoSansJP-Regular.ttf")
+plt.rcParams['font.family'] = "Noto Sans JP"
 
 # モデルの読み込み
-# 実行ディレクトリによってパスが変わる可能性があるため、両方試す
-model_path = 'src/model.pkl'
-if not os.path.exists(model_path):
-    model_path = 'model.pkl'
-
-try:
-    model = joblib.load(model_path)
-except FileNotFoundError:
-    st.error("モデルファイル (model.pkl) が見つかりません。train_model.py を実行してモデルを作成してください。")
-    st.stop()
+model = joblib.load('src/model.pkl')
 
 # タイトル
 st.title("Iris 品種予測アプリ")
