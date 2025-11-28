@@ -9,7 +9,7 @@ Streamlit で構築されており、ブラウザだけで利用できます。
 
 ## 🚀 デモアプリ（Streamlit Cloud）
 
-👉 **アプリURL：https://app-iris-demo-iv4sk6rndpthaeyyyqfzfr.streamlit.app/
+👉 **アプリURL：https://app-iris-demo-ecvtbbvupa98w4xlk8jsle.streamlit.app/
 
 > **Note:**
 > Streamlit Cloud（無料プラン）はシングルスレッドで動作しており、同時接続が増えるとレスポンスが順次遅延します。
