@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager
 from sklearn.datasets import load_iris
 import os
+import time
 
 # 日本語フォント設定
 matplotlib.font_manager.fontManager.addfont("font/NotoSansJP-Regular.ttf")
@@ -25,31 +26,51 @@ petal_width = st.number_input("花弁の幅", 0.0, 10.0, 0.2)
 
 species = ["setosa", "versicolor", "virginica"]
 
+# ------------------------------
+# レートリミット対策（1回/3秒）
+# ------------------------------
+if "last_submit_time" not in st.session_state:
+    st.session_state.last_submit_time = 0
+
+cooldown_seconds = 3
+now = time.time()
+
 if st.button("予測"):
-    # 予測の実行
-    prediction = model.predict([[sepal_length, sepal_width, petal_length, petal_width]])[0]
-    st.success(f"予測結果: {species[prediction]}")
+    if now - st.session_state.last_submit_time < cooldown_seconds:
+        st.warning(f"{cooldown_seconds}秒に1回までの実行に制限しています。しばらく待ってください。")
+    else:
+        try:
+            # タイムスタンプ更新
+            st.session_state.last_submit_time = now
 
-    # 散布図の表示
-    st.subheader("散布図 (花弁の長さ vs 花弁の幅)")
+            # 予測の実行
+            prediction = model.predict([[sepal_length, sepal_width, petal_length, petal_width]])[0]
+            st.success(f"予測結果: {species[prediction]}")
 
-    iris = load_iris()
-    X = iris.data
-    y = iris.target
+            # 散布図の表示
+            st.subheader("散布図 (花弁の長さ vs 花弁の幅)")
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    colors = ["blue", "orange", "green"]
+            iris = load_iris()
+            X = iris.data
+            y = iris.target
 
-    # 学習データのプロット (花弁の長さ(index 2) と 花弁の幅(index 3) を使用)
-    for i, color in enumerate(colors):
-        ax.scatter(X[y == i, 2], X[y == i, 3], alpha=0.6, c=color, label=species[i])
+            fig, ax = plt.subplots(figsize=(6, 4))
+            colors = ["blue", "orange", "green"]
 
-    # 入力データのプロット
-    ax.scatter(petal_length, petal_width, color="red", marker="X", s=50, label="あなたの入力")
+            # 学習データのプロット (花弁の長さ(index 2) と 花弁の幅(index 3) を使用)
+            for i, color in enumerate(colors):
+                ax.scatter(X[y == i, 2], X[y == i, 3], alpha=0.6, c=color, label=species[i])
 
-    ax.set_xlabel("花弁の長さ")
-    ax.set_ylabel("花弁の幅")
-    ax.set_title("Irisデータ散布図と入力プロット")
-    ax.legend()
+            # 入力データのプロット
+            ax.scatter(petal_length, petal_width, color="red", marker="X", s=50, label="あなたの入力")
 
-    st.pyplot(fig)
+            ax.set_xlabel("花弁の長さ")
+            ax.set_ylabel("花弁の幅")
+            ax.set_title("Irisデータ散布図と入力プロット")
+            ax.legend()
+
+            st.pyplot(fig)
+
+        except Exception as e:
+            st.error("予測中にエラーが発生しました。")
+            st.text(str(e))
