@@ -10,7 +10,8 @@ matplotlib.font_manager.fontManager.addfont("font/NotoSansJP-Regular.ttf")
 plt.rcParams['font.family'] = "Noto Sans JP"
 
 # モデルの読み込み
-model = joblib.load('src/model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'model.pkl')
+model = joblib.load(model_path)
 
 # タイトル
 st.title("Iris 品種予測アプリ")
