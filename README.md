@@ -9,7 +9,7 @@ Streamlit で構築されており、ブラウザだけで利用できます。
 
 ## 🚀 デモアプリ（Streamlit Cloud）
 
-👉 **アプリURL：https://app-iris-demo-wcdgwmncq6dhcdpsqm9jcs.streamlit.app/
+👉 **アプリURL：https://app-iris-demo-iv4sk6rndpthaeyyyqfzfr.streamlit.app/
 
 ---
 
