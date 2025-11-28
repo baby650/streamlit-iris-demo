@@ -57,7 +57,7 @@ if st.button("予測"):
         ax.scatter(X[y == i, 2], X[y == i, 3], alpha=0.6, c=color, label=species[i])
 
     # 入力データのプロット
-    ax.scatter(petal_length, petal_width, color="red", marker="X", s=100, label="あなたの入力")
+    ax.scatter(petal_length, petal_width, color="red", marker="X", s=50, label="あなたの入力")
 
     ax.set_xlabel("花弁の長さ")
     ax.set_ylabel("花弁の幅")
