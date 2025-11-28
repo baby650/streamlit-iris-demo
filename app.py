@@ -3,8 +3,10 @@ import joblib
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 
+
 # 日本語フォント設定（Streamlit Cloud で動作するフォント）
-plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+import matplotlib
+matplotlib.rcParams['font.family'] = ['IPAPGothic', 'Noto Sans CJK JP', 'TakaoGothic', 'VL PGothic', 'DejaVu Sans']
 # 日本語フォント設定 (デスクトップ上)
 # plt.rcParams['font.family'] = 'MS Gothic'
 # モデル読み込み
